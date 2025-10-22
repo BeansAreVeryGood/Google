@@ -1,57 +1,16 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+html,body{height:100%;margin:0;font-family:system-ui,Arial,Helvetica,sans-serif;background:#fff;color:#111}
+header{background:#f8f9fd;padding:18px;text-align:center;border-bottom:1px solid #e6e6e6}
+h1{margin:0;font-size:20px;color:#202124}
+main{padding:24px;display:flex;justify-content:center;align-items:flex-start}
+form#search-form{display:flex;gap:8px;width:100%;max-width:800px}
+form#search-form input[type="text"], form#search-form input[type="search"]{
+  flex:1;padding:10px 12px;font-size:16px;border:1px solid #ccc;border-radius:6px;background:#fff;
 }
-
-header {
-    background: #35424a;
-    color: #ffffff;
-    padding: 10px 0;
-    text-align: center;
+form#search-form button{
+  padding:10px 14px;font-size:16px;border-radius:6px;border:none;background:#1a73e8;color:#fff;cursor:pointer;
 }
-
-h1 {
-    margin: 0;
-}
-
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-}
-
-form {
-    margin: 20px 0;
-}
-
-input[type="text"] {
-    padding: 10px;
-    width: 70%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-input[type="submit"] {
-    padding: 10px 15px;
-    background: #35424a;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background: #45a049;
-}
-
-footer {
-    text-align: center;
-    padding: 20px 0;
-    background: #35424a;
-    color: #ffffff;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+footer{padding:12px;text-align:center;color:#666;border-top:1px solid #eee}
+@media (max-width:480px){
+  form#search-form{flex-direction:column}
+  form#search-form button{width:100%}
 }
