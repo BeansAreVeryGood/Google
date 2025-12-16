@@ -43,8 +43,25 @@
     <p>Select a faction to view units.</p>
     <select id="factionSelect">
       <option value="">Select Faction</option>
-      <option value="Space Marines">Space Marines</option>
-      <option value="Orks">Orks</option>
+      <option value="The Imperium of Man – Adeptus Astartes (Space Marines)">The Imperium of Man – Adeptus Astartes (Space Marines)</option>
+      <option value="The Imperium of Man – Astra Militarum (Imperial Guard)">The Imperium of Man – Astra Militarum (Imperial Guard)</option>
+      <option value="The Imperium of Man – Adepta Sororitas (Sisters of Battle)">The Imperium of Man – Adepta Sororitas (Sisters of Battle)</option>
+      <option value="The Imperium of Man – Adeptus Mechanicus">The Imperium of Man – Adeptus Mechanicus</option>
+      <option value="The Imperium of Man – Imperial Knights">The Imperium of Man – Imperial Knights</option>
+      <option value="The Imperium of Man – Adeptus Custodes">The Imperium of Man – Adeptus Custodes</option>
+      <option value="The Imperium of Man – Imperial Agents">The Imperium of Man – Imperial Agents</option>
+      <option value="The Forces of Chaos – Chaos Space Marines">The Forces of Chaos – Chaos Space Marines</option>
+      <option value="The Forces of Chaos – Chaos Daemons">The Forces of Chaos – Chaos Daemons</option>
+      <option value="The Forces of Chaos – Chaos Knights">The Forces of Chaos – Chaos Knights</option>
+      <option value="Xenos – Aeldari (Craftworlds)">Xenos – Aeldari (Craftworlds)</option>
+      <option value="Xenos – Drukhari (Dark Eldar)">Xenos – Drukhari (Dark Eldar)</option>
+      <option value="Xenos – Harlequins">Xenos – Harlequins</option>
+      <option value="Xenos – Orks">Xenos – Orks</option>
+      <option value="Xenos – T’au Empire">Xenos – T’au Empire</option>
+      <option value="Xenos – Tyranids">Xenos – Tyranids</option>
+      <option value="Xenos – Necrons">Xenos – Necrons</option>
+      <option value="Xenos – Genestealer Cults">Xenos – Genestealer Cults</option>
+      <option value="Xenos – Leagues of Votann">Xenos – Leagues of Votann</option>
     </select>
     <button onclick="loadFactionUnits()">View Units</button>
   </div>
@@ -52,7 +69,7 @@
   <div id="units" class="page">
     <h1>Unit List</h1>
     <div class="filters">
-      <label>Role: <select id="roleFilter"><option value="">All</option><option value="HQ">HQ</option><option value="Troops">Troops</option><option value="Elites">Elites</option><option value="Fast Attack">Fast Attack</option></select></label>
+      <label>Role: <select id="roleFilter"><option value="">All</option><option value="HQ">HQ</option><option value="Troops">Troops</option><option value="Elites">Elites</option><option value="Fast Attack">Fast Attack</option><option value="Heavy Support">Heavy Support</option><option value="Dedicated Transport">Dedicated Transport</option></select></label>
       <label>Points Min: <input type="number" id="pointsMin"></label>
       <label>Points Max: <input type="number" id="pointsMax"></label>
       <label>Keyword: <input type="text" id="keywordFilter"></label>
@@ -80,7 +97,7 @@
 
   <div id="search" class="page">
     <h1>Search Units</h1>
-    <input type="text" id="searchQuery" placeholder="Search by name, keyword, or weapon">
+    <input type="text" id="searchQuery" placeholder="Search by name, keyword, ability, lore, or weapon" onkeyup="performSearch()">
     <button onclick="performSearch()">Search</button>
     <div id="searchResults"></div>
   </div>
@@ -125,117 +142,201 @@
   <script>
     let currentFaction = '';
     let allUnits = [
-      {
-        name: "Tactical Marine",
-        faction: "Space Marines",
-        role: "Troops",
-        points: 18,
-        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines",
-        stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" },
-        weapons: [
-          { name: "Boltgun", range: "24\"", type: "Rapid Fire 1", s: "4", ap: "-1", d: "1" },
-          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" }
-        ],
-        abilities: "And They Shall Know No Fear",
-        lore: "The backbone of any Space Marine army."
-      },
-      {
-        name: "Assault Marine",
-        faction: "Space Marines",
-        role: "Troops",
-        points: 25,
-        keywords: "Infantry, Grenades, Jump Pack, Imperium, Adeptus Astartes",
-        stats: { m: "12\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "8", sv: "3+" },
-        weapons: [
-          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" },
-          { name: "Chainsword", range: "Melee", type: "Melee", s: "User", ap: "-1", d: "1" }
-        ],
-        abilities: "And They Shall Know No Fear, Deep Strike",
-        lore: "Leaping into battle with jump packs."
-      },
-      {
-        name: "Devastator Marine",
-        faction: "Space Marines",
-        role: "Elites",
-        points: 30,
-        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines",
-        stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" },
-        weapons: [
-          { name: "Boltgun", range: "24\"", type: "Rapid Fire 1", s: "4", ap: "-1", d: "1" },
-          { name: "Heavy Bolter", range: "36\"", type: "Heavy 3", s: "5", ap: "-1", d: "1" }
-        ],
-        abilities: "And They Shall Know No Fear",
-        lore: "Specialists in heavy weaponry, providing devastating firepower."
-      },
-      {
-        name: "Captain",
-        faction: "Space Marines",
-        role: "HQ",
-        points: 80,
-        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines, Captain",
-        stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" },
-        weapons: [
-          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" },
-          { name: "Master-crafted Power Sword", range: "Melee", type: "Melee", s: "+1", ap: "-3", d: "2" }
-        ],
-        abilities: "And They Shall Know No Fear, Rites of Battle",
-        lore: "Inspiring leaders who rally their brothers to victory."
-      },
-      {
-        name: "Ork Boy",
-        faction: "Orks",
-        role: "Troops",
-        points: 7,
-        keywords: "Infantry, Ork, Waaagh!",
-        stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" },
-        weapons: [
-          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
-          { name: "Choppa", range: "Melee", type: "Melee", s: "User", ap: "0", d: "1" }
-        ],
-        abilities: "Waaagh!",
-        lore: "Basic Ork infantry."
-      },
-      {
-        name: "Nob",
-        faction: "Orks",
-        role: "Elites",
-        points: 25,
-        keywords: "Infantry, Ork, Waaagh!",
-        stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "4", w: "2", a: "3", ld: "7", sv: "6+" },
-        weapons: [
-          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
-          { name: "Power Klaw", range: "Melee", type: "Melee", s: "x2", ap: "-3", d: "2" }
-        ],
-        abilities: "Waaagh!",
-        lore: "Tough Ork leaders."
-      },
-      {
-        name: "Trukk Boy",
-        faction: "Orks",
-        role: "Troops",
-        points: 8,
-        keywords: "Infantry, Ork, Waaagh!",
-        stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" },
-        weapons: [
-          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
-          { name: "Choppa", range: "Melee", type: "Melee", s: "User", ap: "0", d: "1" }
-        ],
-        abilities: "Waaagh!, 'Ere We Go!",
-        lore: "Orks transported in Trukks for rapid assaults."
-      },
-      {
-        name: "Warbuggy",
-        faction: "Orks",
-        role: "Fast Attack",
-        points: 35,
-        keywords: "Vehicle, Ork, Waaagh!",
-        stats: { m: "14\"", ws: "-", bs: "4+", s: "4", t: "4", w: "6", a: "3", ld: "7", sv: "6+" },
-        weapons: [
-          { name: "Twin Big Shoota", range: "36\"", type: "Assault 3", s: "5", ap: "0", d: "1" }
-        ],
-        abilities: "Waaagh!, Explodes",
-        lore: "Fast, ramshackle vehicles armed with big shootas."
-      }
+      // The Imperium of Man – Adeptus Astartes (Space Marines)
+      { name: "Roboute Guilliman", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "6", a: "5", ld: "10", sv: "2+" }, weapons: [], abilities: "Unleash the Lions, Master of the Legion, Chapter Master, Oath of Moment", lore: "Roboute Guilliman is the Primarch of the Ultramarines, a master strategist and warrior who embodies the ideals of the Imperium. Resurrected by the Emperor's will, he leads the Indomitus Crusade to reclaim lost worlds." },
+      { name: "Lion El’Jonson", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "6", a: "5", ld: "10", sv: "2+" }, weapons: [], abilities: "The Lion's Roar, Unleashed Savagery, Shadow of the Lion", lore: "The Primarch of the Dark Angels, Lion El’Jonson is a fierce and enigmatic warrior, shrouded in mystery and legend. He is known for his unyielding resolve and mastery of stealth and combat." },
+      { name: "Marneus Calgar", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear, Chapter Master, Tactical Precision", lore: "Chapter Master of the Ultramarines, Marneus Calgar is a legendary hero and tactician, known for his victories against overwhelming odds and his unshakeable faith in the Emperor." },
+      { name: "Dante", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear, Chapter Master, Unleash the Lions", lore: "Commander Dante of the Blood Angels is one of the oldest and most revered Space Marine leaders, a master of warfare who has defended the Imperium for over a millennium." },
+      { name: "Azrael", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear, Chapter Master, Supreme Grand Master", lore: "Supreme Grand Master of the Dark Angels, Azrael is the keeper of the Chapter's secrets and the relentless hunter of the Fallen, driven by duty and honor." },
+      { name: "Logan Grimnar", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear, Chapter Master, Saga of the Warrior Born", lore: "Great Wolf of the Space Wolves, Logan Grimnar is a legendary warrior and leader, embodying the fury and resilience of his Chapter in the face of endless foes." },
+      { name: "Intercessor Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Assault Intercessor Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Tactical Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Terminator Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "5\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "2+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Infernus Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Infiltrator Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Scout Squad", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Dreadnought", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Astartes", stats: { m: "6\"", ws: "3+", bs: "3+", s: "6", t: "7", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Redemptor Dreadnought", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Astartes", stats: { m: "8\"", ws: "3+", bs: "3+", s: "6", t: "7", w: "10", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Land Raider", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Astartes", stats: { m: "10\"", ws: "6+", bs: "3+", s: "8", t: "8", w: "16", a: "6", ld: "9", sv: "2+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      { name: "Rhino", faction: "The Imperium of Man – Adeptus Astartes (Space Marines)", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Astartes", stats: { m: "12\"", ws: "6+", bs: "-", s: "6", t: "7", w: "10", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "And They Shall Know No Fear", lore: "" },
+      // The Imperium of Man – Astra Militarum (Imperial Guard)
+      { name: "Lord Solar Leontus", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Astra Militarum", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "4", ld: "9", sv: "4+" }, weapons: [], abilities: "Voice of Command, Tactical Acumen", lore: "Lord Solar Leontus is a brilliant strategist and commander of the Astra Militarum, known for his tactical genius and unyielding defense of the Imperium." },
+      { name: "Ursula Creed", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Astra Militarum", stats: { m: "6\"", ws: "3+", bs: "2+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "4+" }, weapons: [], abilities: "Master of Command, Lead from the Front", lore: "Colonel Ursula Creed is the ultimate tactician of the Imperial Guard, a master of strategy whose plans have turned the tide of countless battles." },
+      { name: "Infantry Squad", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Cadian Shock Troops", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Command Squad", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Heavy Weapons Squad", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Kasrkin", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Tempestus Scions", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Astra Militarum", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Leman Russ Battle Tank", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Astra Militarum", stats: { m: "10\"", ws: "6+", bs: "3+", s: "8", t: "8", w: "14", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Rogal Dorn Tank", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Astra Militarum", stats: { m: "10\"", ws: "6+", bs: "3+", s: "8", t: "8", w: "14", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Chimera", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, Imperium, Astra Militarum", stats: { m: "10\"", ws: "6+", bs: "-", s: "6", t: "7", w: "11", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Basilisk", faction: "The Imperium of Man – Astra Militarum (Imperial Guard)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Astra Militarum", stats: { m: "10\"", ws: "6+", bs: "4+", s: "6", t: "7", w: "11", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // The Imperium of Man – Adepta Sororitas (Sisters of Battle)
+      { name: "Morvenn Vahl", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "2+", bs: "2+", s: "3", t: "3", w: "4", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "Unleash the Lions, Divine Intervention", lore: "Morvenn Vahl is the Palatine of the Adepta Sororitas, a fierce warrior of unshakeable faith who leads her sisters in righteous fury against the enemies of the Emperor." },
+      { name: "Saint Celestine", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "2+", bs: "2+", s: "3", t: "3", w: "4", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "The Passion, Unleash the Lions", lore: "Saint Celestine, the Living Saint, is a divine figure resurrected by the Emperor's will, inspiring hope and vengeance in the hearts of the faithful." },
+      { name: "Battle Sisters Squad", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Celestian Squad", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Repentia Squad", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Retributor Squad", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adepta Sororitas", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Seraphim Squad", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Fast Attack", points: "TBD", keywords: "Infantry, Jump Pack, Imperium, Adepta Sororitas", stats: { m: "12\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Paragon Warsuits", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adepta Sororitas", stats: { m: "8\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Immolator", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adepta Sororitas", stats: { m: "12\"", ws: "6+", bs: "-", s: "6", t: "7", w: "10", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Exorcist", faction: "The Imperium of Man – Adepta Sororitas (Sisters of Battle)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adepta Sororitas", stats: { m: "12\"", ws: "6+", bs: "4+", s: "6", t: "7", w: "11", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // The Imperium of Man – Adeptus Mechanicus
+      { name: "Belisarius Cawl", faction: "The Imperium of Man – Adeptus Mechanicus", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Mechanicus", stats: { m: "6\"", ws: "3+", bs: "2+", s: "4", t: "4", w: "5", a: "3", ld: "9", sv: "3+" }, weapons: [], abilities: "Master of Machines, Omnissiah's Grace", lore: "Archmagos Dominus Belisarius Cawl is a genius artificer of the Adeptus Mechanicus, creator of wondrous machines and Primaris Space Marines." },
+      { name: "Skitarii Rangers", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Mechanicus", stats: { m: "6\"", ws: "4+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Skitarii Vanguard", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Mechanicus", stats: { m: "6\"", ws: "4+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Kataphron Breachers", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Mechanicus", stats: { m: "6\"", ws: "4+", bs: "4+", s: "5", t: "5", w: "4", a: "2", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Kataphron Destroyers", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Mechanicus", stats: { m: "6\"", ws: "4+", bs: "4+", s: "5", t: "5", w: "4", a: "2", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Sicarian Infiltrators", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Mechanicus", stats: { m: "8\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Sicarian Ruststalkers", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Mechanicus", stats: { m: "8\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Onager Dunecrawler", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Mechanicus", stats: { m: "8\"", ws: "4+", bs: "4+", s: "6", t: "7", w: "11", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Ironstrider Ballistarius", faction: "The Imperium of Man – Adeptus Mechanicus", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Mechanicus", stats: { m: "8\"", ws: "4+", bs: "3+", s: "5", t: "5", w: "6", a: "2", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // The Imperium of Man – Imperial Knights
+      { name: "Armiger Helverin", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "14\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Armiger Warglaive", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "14\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Paladin", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "12\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "16", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Errant", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "12\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "16", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Crusader", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "10\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "18", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Castellan", faction: "The Imperium of Man – Imperial Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Imperial Knights", stats: { m: "10\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "18", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // The Imperium of Man – Adeptus Custodes
+      { name: "Trajann Valoris", faction: "The Imperium of Man – Adeptus Custodes", role: "HQ", points: "TBD", keywords: "Character, Imperium, Adeptus Custodes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "2+" }, weapons: [], abilities: "Unleash the Lions, Arcane Genetic Alchemy", lore: "Shield-Captain Trajann Valoris is the Captain-Commander of the Adeptus Custodes, a legendary warrior sworn to protect the Emperor." },
+      { name: "Custodian Guard", faction: "The Imperium of Man – Adeptus Custodes", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Adeptus Custodes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "2", a: "3", ld: "9", sv: "2+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Custodian Wardens", faction: "The Imperium of Man – Adeptus Custodes", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Custodes", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "2", a: "3", ld: "9", sv: "2+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Allarus Terminators", faction: "The Imperium of Man – Adeptus Custodes", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Adeptus Custodes", stats: { m: "5\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "3", a: "3", ld: "9", sv: "2+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Vertus Praetors", faction: "The Imperium of Man – Adeptus Custodes", role: "Fast Attack", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Custodes", stats: { m: "16\"", ws: "2+", bs: "2+", s: "6", t: "6", w: "8", a: "4", ld: "9", sv: "2+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Contemptor-Galatus Dreadnought", faction: "The Imperium of Man – Adeptus Custodes", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Imperium, Adeptus Custodes", stats: { m: "8\"", ws: "2+", bs: "2+", s: "6", t: "7", w: "10", a: "4", ld: "9", sv: "2+" }, weapons: [], abilities: "", lore: "" },
+      // The Imperium of Man – Imperial Agents
+      { name: "Inquisitor Eisenhorn", faction: "The Imperium of Man – Imperial Agents", role: "HQ", points: "TBD", keywords: "Character, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "4+" }, weapons: [], abilities: "Psychic Hood, Master of Deception", lore: "Inquisitor Gregor Eisenhorn is a relentless hunter of heretics and daemons, known for his cunning and unyielding pursuit of the Emperor's enemies." },
+      { name: "Inquisitor Greyfax", faction: "The Imperium of Man – Imperial Agents", role: "HQ", points: "TBD", keywords: "Character, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "4+" }, weapons: [], abilities: "Psychic Hood, Master of the Imperium", lore: "Inquisitor Katarinya Greyfax is a powerful psyker and Inquisitor, wielding the forces of the warp to combat the threats to the Imperium." },
+      { name: "Vindicare Assassin", faction: "The Imperium of Man – Imperial Agents", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "2+", s: "3", t: "3", w: "2", a: "2", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Callidus Assassin", faction: "The Imperium of Man – Imperial Agents", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "2", a: "2", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Eversor Assassin", faction: "The Imperium of Man – Imperial Agents", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "2", a: "3", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Culexus Assassin", faction: "The Imperium of Man – Imperial Agents", role: "Elites", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "2", a: "2", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Inquisitorial Acolytes", faction: "The Imperium of Man – Imperial Agents", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Imperial Navy Breachers", faction: "The Imperium of Man – Imperial Agents", role: "Troops", points: "TBD", keywords: "Infantry, Imperium, Imperial Agents", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      // The Forces of Chaos – Chaos Space Marines
+      { name: "Abaddon the Despoiler", faction: "The Forces of Chaos – Chaos Space Marines", role: "HQ", points: "TBD", keywords: "Character, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "6", a: "5", ld: "10", sv: "2+" }, weapons: [], abilities: "Mark of Chaos, The Warmaster", lore: "Abaddon the Despoiler is the Warmaster of Chaos, a relentless conqueror who seeks to destroy the Imperium and claim the galaxy for the Dark Gods." },
+      { name: "Fabius Bile", faction: "The Forces of Chaos – Chaos Space Marines", role: "HQ", points: "TBD", keywords: "Character, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "5", a: "3", ld: "9", sv: "3+" }, weapons: [], abilities: "Enhanced Warriors, Master of Poisons", lore: "Fabius Bile, the Clonelord, is a twisted genius who experiments with flesh and creates monstrous warriors for the forces of Chaos." },
+      { name: "Chaos Lord", faction: "The Forces of Chaos – Chaos Space Marines", role: "HQ", points: "TBD", keywords: "Character, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "Unleash the Lions, Lord of Chaos", lore: "Chaos Lords are the supreme commanders of the Chaos Space Marines, twisted reflections of the noble Chapter Masters they once were, corrupted by the Dark Gods." },
+      { name: "Cultist Mob", faction: "The Forces of Chaos – Chaos Space Marines", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "5+", bs: "5+", s: "3", t: "3", w: "1", a: "1", ld: "6", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Legionaries", faction: "The Forces of Chaos – Chaos Space Marines", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Chosen", faction: "The Forces of Chaos – Chaos Space Marines", role: "Elites", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Terminators", faction: "The Forces of Chaos – Chaos Space Marines", role: "Elites", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "5\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "2+" }, weapons: [], abilities: [], lore: "" },
+      { name: "Possessed", faction: "The Forces of Chaos – Chaos Space Marines", role: "Elites", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "3+", bs: "3+", s: "5", t: "4", w: "2", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Havocs", faction: "The Forces of Chaos – Chaos Space Marines", role: "Elites", points: "TBD", keywords: "Infantry, Chaos, Chaos Space Marines", stats: { m: "6\"", ws: "4+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Helbrute", faction: "The Forces of Chaos – Chaos Space Marines", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Space Marines", stats: { m: "8\"", ws: "4+", bs: "4+", s: "6", t: "7", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Chaos Rhino", faction: "The Forces of Chaos – Chaos Space Marines", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, Chaos, Chaos Space Marines", stats: { m: "12\"", ws: "6+", bs: "-", s: "6", t: "7", w: "10", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // The Forces of Chaos – Chaos Daemons
+      { name: "Ûthar the Destined", faction: "The Forces of Chaos – Chaos Daemons", role: "HQ", points: "TBD", keywords: "Character, Daemon, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "10", sv: "3+" }, weapons: [], abilities: "Daemonic, Unleash the Lions, Lord of the Host, The Blood God's Gaze", lore: "Ûthar the Destined is a Bloodthirster of Khorne, marked by fate to lead the daemonic hordes in eternal slaughter." },
+      { name: "Bloodletters", faction: "The Forces of Chaos – Chaos Daemons", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Daemonettes", faction: "The Forces of Chaos – Chaos Daemons", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Plaguebearers", faction: "The Forces of Chaos – Chaos Daemons", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Pink Horrors", faction: "The Forces of Chaos – Chaos Daemons", role: "Troops", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Bloodcrushers", faction: "The Forces of Chaos – Chaos Daemons", role: "Fast Attack", points: "TBD", keywords: "Cavalry, Chaos, Chaos Daemons", stats: { m: "8\"", ws: "3+", bs: "3+", s: "5", t: "4", w: "3", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Plague Drones", faction: "The Forces of Chaos – Chaos Daemons", role: "Fast Attack", points: "TBD", keywords: "Vehicle, Chaos, Chaos Daemons", stats: { m: "10\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "3", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Flamers", faction: "The Forces of Chaos – Chaos Daemons", role: "Fast Attack", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Seekers", faction: "The Forces of Chaos – Chaos Daemons", role: "Fast Attack", points: "TBD", keywords: "Infantry, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Beasts of Nurgle", faction: "The Forces of Chaos – Chaos Daemons", role: "Fast Attack", points: "TBD", keywords: "Beast, Chaos, Chaos Daemons", stats: { m: "6\"", ws: "4+", bs: "-", s: "4", t: "4", w: "2", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      // The Forces of Chaos – Chaos Knights
+      { name: "War Dog Brigand", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "14\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "War Dog Karnivore", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "14\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "War Dog Stalker", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "14\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Abominant", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "12\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "16", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Desecrator", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "12\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "16", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Knight Rampager", faction: "The Forces of Chaos – Chaos Knights", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Chaos, Chaos Knights", stats: { m: "12\"", ws: "3+", bs: "3+", s: "8", t: "8", w: "16", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Aeldari (Craftworlds)
+      { name: "Eldrad Ulthran", faction: "Xenos – Aeldari (Craftworlds)", role: "HQ", points: "TBD", keywords: "Character, Aeldari, Craftworlds", stats: { m: "6\"", ws: "2+", bs: "2+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "5+" }, weapons: [], abilities: "Foresight, Guide", lore: "Eldrad Ulthran is the Farseer of Ulthwe, a master of the future who weaves fate to protect his people from the encroaching darkness." },
+      { name: "Farseer", faction: "Xenos – Aeldari (Craftworlds)", role: "HQ", points: "TBD", keywords: "Character, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "2", ld: "9", sv: "5+" }, weapons: [], abilities: "Foresight, Guide, Runes of Fate", lore: "Farseers are the psychic leaders of the Craftworlds, wielding the power of the warp to guide their people through the perils of the galaxy." },
+      { name: "Warlock", faction: "Xenos – Aeldari (Craftworlds)", role: "HQ", points: "TBD", keywords: "Character, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "2", ld: "9", sv: "5+" }, weapons: [], abilities: "Foresight, Guide, Runes of Fate", lore: "Warlocks are the apprentices of the Farseers, honing their psychic abilities to support their craftworld's seers." },
+      { name: "Guardian Defenders", faction: "Xenos – Aeldari (Craftworlds)", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Storm Guardians", faction: "Xenos – Aeldari (Craftworlds)", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Dire Avengers", faction: "Xenos – Aeldari (Craftworlds)", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Howling Banshees", faction: "Xenos – Aeldari (Craftworlds)", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Striking Scorpions", faction: "Xenos – Aeldari (Craftworlds)", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Wraithguard", faction: "Xenos – Aeldari (Craftworlds)", role: "Elites", points: "TBD", keywords: "Infantry, Aeldari, Craftworlds", stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "5", w: "3", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Wraithlord", faction: "Xenos – Aeldari (Craftworlds)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Aeldari, Craftworlds", stats: { m: "6\"", ws: "3+", bs: "4+", s: "6", t: "6", w: "8", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Wave Serpent", faction: "Xenos – Aeldari (Craftworlds)", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, Aeldari, Craftworlds", stats: { m: "16\"", ws: "6+", bs: "-", s: "6", t: "6", w: "12", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Drukhari (Dark Eldar)
+      { name: "Lelith Hesperax", faction: "Xenos – Drukhari (Dark Eldar)", role: "HQ", points: "TBD", keywords: "Character, Drukhari, Dark Eldar", stats: { m: "6\"", ws: "2+", bs: "2+", s: "3", t: "3", w: "4", a: "4", ld: "9", sv: "5+" }, weapons: [], abilities: "Lightning Reflexes, Acrobatic", lore: "Lelith Hesperax, the Serpent Queen, is a deadly wych warrior who revels in the agony of her foes, a master of pain and precision." },
+      { name: "Kabalite Warriors", faction: "Xenos – Drukhari (Dark Eldar)", role: "Troops", points: "TBD", keywords: "Infantry, Drukhari, Dark Eldar", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Wyches", faction: "Xenos – Drukhari (Dark Eldar)", role: "Troops", points: "TBD", keywords: "Infantry, Drukhari, Dark Eldar", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Wracks", faction: "Xenos – Drukhari (Dark Eldar)", role: "Troops", points: "TBD", keywords: "Infantry, Drukhari, Dark Eldar", stats: { m: "6\"", ws: "4+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Incubi", faction: "Xenos – Drukhari (Dark Eldar)", role: "Elites", points: "TBD", keywords: "Infantry, Drukhari, Dark Eldar", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Scourges", faction: "Xenos – Drukhari (Dark Eldar)", role: "Fast Attack", points: "TBD", keywords: "Infantry, Drukhari, Dark Eldar", stats: { m: "12\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Talos", faction: "Xenos – Drukhari (Dark Eldar)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Drukhari, Dark Eldar", stats: { m: "8\"", ws: "3+", bs: "3+", s: "5", t: "5", w: "6", a: "3", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Raider", faction: "Xenos – Drukhari (Dark Eldar)", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, Drukhari, Dark Eldar", stats: { m: "14\"", ws: "4+", bs: "-", s: "4", t: "4", w: "6", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Ravager", faction: "Xenos – Drukhari (Dark Eldar)", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Drukhari, Dark Eldar", stats: { m: "14\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "6", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Harlequins
+      { name: "Troupe", faction: "Xenos – Harlequins", role: "Troops", points: "TBD", keywords: "Infantry, Aeldari, Harlequins", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "1", a: "2", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Troupe Master", faction: "Xenos – Harlequins", role: "HQ", points: "TBD", keywords: "Character, Aeldari, Harlequins", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "5+" }, weapons: [], abilities: "Flickering Quiver, Player of the Light, Unleash the Lions", lore: "Troupe Masters are the charismatic leaders of Harlequin troupes, masters of illusion and deadly performers." },
+      { name: "Death Jester", faction: "Xenos – Harlequins", role: "Elites", points: "TBD", keywords: "Infantry, Aeldari, Harlequins", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Shadowseer", faction: "Xenos – Harlequins", role: "HQ", points: "TBD", keywords: "Character, Aeldari, Harlequins", stats: { m: "6\"", ws: "3+", bs: "3+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "5+" }, weapons: [], abilities: "Flickering Quiver, Player of the Light, Veil of Tears", lore: "Shadowseers are the enigmatic psykers of the Harlequins, weaving illusions and guiding their troupes through the shadows." },
+      { name: "Skyweavers", faction: "Xenos – Harlequins", role: "Fast Attack", points: "TBD", keywords: "Vehicle, Aeldari, Harlequins", stats: { m: "16\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "6", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Voidweaver", faction: "Xenos – Harlequins", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Aeldari, Harlequins", stats: { m: "16\"", ws: "6+", bs: "4+", s: "6", t: "6", w: "12", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Orks
+      { name: "Ghazghkull Thraka", faction: "Xenos – Orks", role: "HQ", points: "TBD", keywords: "Character, Ork, Waaagh!", stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "4", w: "6", a: "5", ld: "8", sv: "4+" }, weapons: [], abilities: "Da Biggest Boss, Waaagh!", lore: "Ghazghkull Thraka, the Beast of Armageddon, is a legendary Ork Warlord whose Waaagh! shakes the stars, leading hordes in endless conquest." },
+      { name: "Warboss", faction: "Xenos – Orks", role: "HQ", points: "TBD", keywords: "Character, Ork, Waaagh!", stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "4", w: "5", a: "4", ld: "7", sv: "4+" }, weapons: [], abilities: "Unleash the Lions, Waaagh!, Mob Rule", lore: "Warbosses are the brutal leaders of Ork clans, rising to power through violence and commanding their boyz in glorious Waaaghs!" },
+      { name: "Boyz", faction: "Xenos – Orks", role: "Troops", points: "TBD", keywords: "Infantry, Ork, Waaagh!", stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Nobz", faction: "Xenos – Orks", role: "Elites", points: "TBD", keywords: "Infantry, Ork, Waaagh!", stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "4", w: "2", a: "3", ld: "7", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Gretchin", faction: "Xenos – Orks", role: "Troops", points: "TBD", keywords: "Infantry, Ork, Waaagh!", stats: { m: "5\"", ws: "5+", bs: "5+", s: "2", t: "2", w: "1", a: "1", ld: "5", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Stormboyz", faction: "Xenos – Orks", role: "Troops", points: "TBD", keywords: "Infantry, Jump Pack, Ork, Waaagh!", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "2", ld: "7", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Kommandos", faction: "Xenos – Orks", role: "Troops", points: "TBD", keywords: "Infantry, Ork, Waaagh!", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Lootas", faction: "Xenos – Orks", role: "Elites", points: "TBD", keywords: "Infantry, Ork, Waaagh!", stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Deff Dread", faction: "Xenos – Orks", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Ork, Waaagh!", stats: { m: "6\"", ws: "4+", bs: "4+", s: "6", t: "6", w: "8", a: "4", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Battlewagon", faction: "Xenos – Orks", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Ork, Waaagh!", stats: { m: "10\"", ws: "6+", bs: "-", s: "6", t: "7", w: "14", a: "3", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – T’au Empire
+      { name: "Commander Shadowsun", faction: "Xenos – T’au Empire", role: "HQ", points: "TBD", keywords: "Character, T’au, T’au Empire", stats: { m: "6\"", ws: "2+", bs: "2+", s: "3", t: "3", w: "4", a: "4", ld: "9", sv: "4+" }, weapons: [], abilities: "Kauyon, Mont'ka", lore: "Commander Shadowsun is the Supreme Commander of the T'au Empire, a master strategist whose campaigns expand the Greater Good across the galaxy." },
+      { name: "Commander", faction: "Xenos – T’au Empire", role: "HQ", points: "TBD", keywords: "Character, T’au, T’au Empire", stats: { m: "6\"", ws: "3+", bs: "2+", s: "3", t: "3", w: "4", a: "3", ld: "9", sv: "4+" }, weapons: [], abilities: "Unleash the Lions, For the Greater Good, Coordinated Fire", lore: "Commanders are the strategic leaders of the T'au Empire, directing their forces with advanced technology and unwavering resolve." },
+      { name: "Fire Warrior Strike Team", faction: "Xenos – T’au Empire", role: "Troops", points: "TBD", keywords: "Infantry, T’au, T’au Empire", stats: { m: "6\"", ws: "5+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Breacher Team", faction: "Xenos – T’au Empire", role: "Troops", points: "TBD", keywords: "Infantry, T’au, T’au Empire", stats: { m: "6\"", ws: "5+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Pathfinders", faction: "Xenos – T’au Empire", role: "Troops", points: "TBD", keywords: "Infantry, T’au, T’au Empire", stats: { m: "6\"", ws: "5+", bs: "4+", s: "3", t: "3", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Crisis Battlesuits", faction: "Xenos – T’au Empire", role: "Elites", points: "TBD", keywords: "Vehicle, T’au, T’au Empire", stats: { m: "8\"", ws: "5+", bs: "4+", s: "5", t: "5", w: "6", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Stealth Battlesuits", faction: "Xenos – T’au Empire", role: "Fast Attack", points: "TBD", keywords: "Vehicle, T’au, T’au Empire", stats: { m: "8\"", ws: "5+", bs: "4+", s: "4", t: "4", w: "4", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Broadside Battlesuits", faction: "Xenos – T’au Empire", role: "Heavy Support", points: "TBD", keywords: "Vehicle, T’au, T’au Empire", stats: { m: "6\"", ws: "5+", bs: "4+", s: "5", t: "5", w: "6", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Hammerhead Gunship", faction: "Xenos – T’au Empire", role: "Heavy Support", points: "TBD", keywords: "Vehicle, T’au, T’au Empire", stats: { m: "12\"", ws: "6+", bs: "4+", s: "6", t: "6", w: "10", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Devilfish", faction: "Xenos – T’au Empire", role: "Dedicated Transport", points: "TBD", keywords: "Vehicle, T’au, T’au Empire", stats: { m: "12\"", ws: "6+", bs: "-", s: "6", t: "6", w: "10", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Tyranids
+      { name: "The Swarmlord", faction: "Xenos – Tyranids", role: "HQ", points: "TBD", keywords: "Character, Tyranid, Tyranids", stats: { m: "6\"", ws: "2+", bs: "2+", s: "6", t: "6", w: "8", a: "6", ld: "10", sv: "3+" }, weapons: [], abilities: "Synapse, Instinctive Behaviour", lore: "The Swarmlord is the ultimate Tyranid warrior, a psychic beacon that coordinates the hive mind's relentless advance to consume all biomass." },
+      { name: "Hive Tyrant", faction: "Xenos – Tyranids", role: "HQ", points: "TBD", keywords: "Monster, Tyranid, Tyranids", stats: { m: "8\"", ws: "3+", bs: "3+", s: "6", t: "6", w: "8", a: "5", ld: "9", sv: "3+" }, weapons: [], abilities: "Synapse, Shadow in the Warp, Instinctive Behaviour", lore: "Hive Tyrants are the monstrous overlords of Tyranid swarms, directing the hive mind's insatiable hunger for biomass." },
+      { name: "Termagants", faction: "Xenos – Tyranids", role: "Troops", points: "TBD", keywords: "Infantry, Tyranid, Tyranids", stats: { m: "6\"", ws: "5+", bs: "5+", s: "3", t: "3", w: "1", a: "1", ld: "5", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Hormagaunts", faction: "Xenos – Tyranids", role: "Troops", points: "TBD", keywords: "Infantry, Tyranid, Tyranids", stats: { m: "8\"", ws: "4+", bs: "-", s: "3", t: "3", w: "1", a: "2", ld: "5", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Genestealers", faction: "Xenos – Tyranids", role: "Troops", points: "TBD", keywords: "Infantry, Tyranid, Tyranids", stats: { m: "8\"", ws: "3+", bs: "4+", s: "4", t: "4", w: "1", a: "3", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Warriors", faction: "Xenos – Tyranids", role: "Elites", points: "TBD", keywords: "Infantry, Tyranid, Tyranids", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Zoanthropes", faction: "Xenos – Tyranids", role: "Heavy Support", points: "TBD", keywords: "Infantry, Tyranid, Tyranids", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Carnifex", faction: "Xenos – Tyranids", role: "Heavy Support", points: "TBD", keywords: "Monster, Tyranid, Tyranids", stats: { m: "8\"", ws: "4+", bs: "4+", s: "6", t: "6", w: "8", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Trygon", faction: "Xenos – Tyranids", role: "Heavy Support", points: "TBD", keywords: "Monster, Tyranid, Tyranids", stats: { m: "10\"", ws: "4+", bs: "-", s: "6", t: "6", w: "10", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Tyrannofex", faction: "Xenos – Tyranids", role: "Heavy Support", points: "TBD", keywords: "Monster, Tyranid, Tyranids", stats: { m: "6\"", ws: "4+", bs: "4+", s: "6", t: "6", w: "10", a: "4", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Necrons
+      { name: "The Silent King", faction: "Xenos – Necrons", role: "HQ", points: "TBD", keywords: "Character, Necron, Necrons", stats: { m: "5\"", ws: "2+", bs: "2+", s: "5", t: "5", w: "6", a: "4", ld: "10", sv: "2+" }, weapons: [], abilities: "Living Metal, Quantum Shielding, Reanimation Protocols, Command Protocols, The Will of the Cryptek", lore: "The Silent King is Szarekh, the last Pharaoh of the Necrons, who seeks to unite his fractured race and reclaim their lost glory." },
+      { name: "Overlord", faction: "Xenos – Necrons", role: "HQ", points: "TBD", keywords: "Character, Necron, Necrons", stats: { m: "6\"", ws: "3+", bs: "3+", s: "5", t: "5", w: "5", a: "4", ld: "9", sv: "3+" }, weapons: [], abilities: "Living Metal, Quantum Shielding, Reanimation Protocols, Command Protocols", lore: "Overlords are the ancient rulers of Necron dynasties, commanding legions of undead warriors in their eternal quest for galactic domination." },
+      { name: "Necron Warriors", faction: "Xenos – Necrons", role: "Troops", points: "TBD", keywords: "Infantry, Necron, Necrons", stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "8", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Immortals", faction: "Xenos – Necrons", role: "Troops", points: "TBD", keywords: "Infantry, Necron, Necrons", stats: { m: "5\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "8", sv: "3+" }, weapons: [], abilities: [], lore: "" },
+      { name: "Lychguard", faction: "Xenos – Necrons", role: "Elites", points: "TBD", keywords: "Infantry, Necron, Necrons", stats: { m: "5\"", ws: "3+", bs: "3+", s: "5", t: "5", w: "2", a: "2", ld: "9", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Skorpekh Destroyers", faction: "Xenos – Necrons", role: "Elites", points: "TBD", keywords: "Infantry, Necron, Necrons", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Canoptek Scarabs", faction: "Xenos – Necrons", role: "Fast Attack", points: "TBD", keywords: "Swarm, Necron, Necrons", stats: { m: "8\"", ws: "4+", bs: "-", s: "3", t: "3", w: "2", a: "3", ld: "6", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Canoptek Wraiths", faction: "Xenos – Necrons", role: "Fast Attack", points: "TBD", keywords: "Vehicle, Necron, Necrons", stats: { m: "10\"", ws: "3+", bs: "-", s: "6", t: "6", w: "6", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Doomsday Ark", faction: "Xenos – Necrons", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Necron, Necrons", stats: { m: "8\"", ws: "4+", bs: "4+", s: "6", t: "7", w: "12", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Monolith", faction: "Xenos – Necrons", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Necron, Necrons", stats: { m: "8\"", ws: "4+", bs: "4+", s: "8", t: "8", w: "20", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Genestealer Cults
+      { name: "Patriarch", faction: "Xenos – Genestealer Cults", role: "HQ", points: "TBD", keywords: "Character, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "4+" }, weapons: [], abilities: "Synapse, Cult Ambush, Instinctive Behaviour", lore: "Patriarchs are the ancient Genestealer leaders of cults, directing their hybrid offspring in the shadows of Imperial worlds." },
+      { name: "Primus", faction: "Xenos – Genestealer Cults", role: "HQ", points: "TBD", keywords: "Character, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "4", a: "3", ld: "8", sv: "4+" }, weapons: [], abilities: "Cult Ambush, Unleash the Lions, Brood Telepathy", lore: "Primuses are the tactical commanders of Genestealer Cults, coordinating ambushes and directing the cult's forces." },
+      { name: "Magus", faction: "Xenos – Genestealer Cults", role: "HQ", points: "TBD", keywords: "Character, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "4", a: "3", ld: "8", sv: "4+" }, weapons: [], abilities: "Cult Ambush, Unleash the Lions, Psyker", lore: "Magi are the psychic conduits of Genestealer Cults, channeling the hive mind's power to aid their brethren." },
+      { name: "Neophyte Hybrids", faction: "Xenos – Genestealer Cults", role: "Troops", points: "TBD", keywords: "Infantry, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Acolyte Hybrids", faction: "Xenos – Genestealer Cults", role: "Troops", points: "TBD", keywords: "Infantry, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Aberrants", faction: "Xenos – Genestealer Cults", role: "Elites", points: "TBD", keywords: "Infantry, Tyranid, Genestealer Cults", stats: { m: "6\"", ws: "4+", bs: "4+", s: "5", t: "4", w: "2", a: "2", ld: "7", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Purestrain Genestealers", faction: "Xenos – Genestealer Cults", role: "Elites", points: "TBD", keywords: "Infantry, Tyranid, Genestealer Cults", stats: { m: "8\"", ws: "3+", bs: "4+", s: "4", t: "4", w: "1", a: "3", ld: "8", sv: "5+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Goliath Truck", faction: "Xenos – Genestealer Cults", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Tyranid, Genestealer Cults", stats: { m: "10\"", ws: "4+", bs: "-", s: "6", t: "6", w: "10", a: "3", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Goliath Rockgrinder", faction: "Xenos – Genestealer Cults", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Tyranid, Genestealer Cults", stats: { m: "10\"", ws: "4+", bs: "-", s: "6", t: "6", w: "10", a: "3", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      // Xenos – Leagues of Votann
+      { name: "Kâhl", faction: "Xenos – Leagues of Votann", role: "HQ", points: "TBD", keywords: "Character, Squat, Leagues of Votann", stats: { m: "5\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "4", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "Unleash the Lions, Grim Demeanour", lore: "Kâhl is a legendary hero of the Leagues of Votann, a master of the Sagas who embodies the unyielding spirit and tactical prowess of his kin." },
+      { name: "Hearthkyn Warriors", faction: "Xenos – Leagues of Votann", role: "Troops", points: "TBD", keywords: "Infantry, Squat, Leagues of Votann", stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Berserks", faction: "Xenos – Leagues of Votann", role: "Elites", points: "TBD", keywords: "Infantry, Squat, Leagues of Votann", stats: { m: "5\"", ws: "3+", bs: "4+", s: "4", t: "4", w: "1", a: "2", ld: "7", sv: "4+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Hearthguard", faction: "Xenos – Leagues of Votann", role: "Elites", points: "TBD", keywords: "Infantry, Squat, Leagues of Votann", stats: { m: "5\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "2", a: "2", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Sagitaur", faction: "Xenos – Leagues of Votann", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Squat, Leagues of Votann", stats: { m: "8\"", ws: "4+", bs: "4+", s: "6", t: "6", w: "8", a: "3", ld: "7", sv: "3+" }, weapons: [], abilities: "", lore: "" },
+      { name: "Hekaton Land Fortress", faction: "Xenos – Leagues of Votann", role: "Heavy Support", points: "TBD", keywords: "Vehicle, Squat, Leagues of Votann", stats: { m: "8\"", ws: "4+", bs: "4+", s: "8", t: "8", w: "20", a: "3", ld: "8", sv: "3+" }, weapons: [], abilities: "", lore: "" }
     ];
 
     function showPage(pageId) {
@@ -321,15 +422,22 @@
       const results = allUnits.filter(u =>
         u.name.toLowerCase().includes(query) ||
         u.keywords.toLowerCase().includes(query) ||
-        u.weapons.some(w => w.name.toLowerCase().includes(query))
+        u.abilities.toLowerCase().includes(query) ||
+        u.lore.toLowerCase().includes(query) ||
+        u.weapons.some(w => w.name && w.name.toLowerCase().includes(query))
       );
       const container = document.getElementById('searchResults');
       container.innerHTML = '';
-      results.forEach(unit => {
-        const div = document.createElement('div');
-        div.innerHTML = `<h3>${unit.name} (${unit.faction})</h3><button onclick="viewUnit('${unit.name}')">View</button>`;
-        container.appendChild(div);
-      });
+      if (results.length === 0) {
+        container.innerHTML = '<p>No units found matching your search.</p>';
+      } else {
+        results.forEach(unit => {
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.innerHTML = `<h3>${unit.name}</h3><p><strong>Faction:</strong> ${unit.faction}</p><p><strong>Role:</strong> ${unit.role}</p><button onclick="viewUnit('${unit.name}')">View Details</button>`;
+          container.appendChild(div);
+        });
+      }
     }
 
     function compareUnits() {

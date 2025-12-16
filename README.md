@@ -22,7 +22,12 @@ A comprehensive website for Warhammer 40k unit data cards, featuring faction-spe
 
 ## Data
 
-Currently includes sample units for Space Marines and Orks. Data structure supports:
+Currently includes sample units for all major Warhammer 40k factions with placeholder data. Units include:
+- The Imperium of Man: Adeptus Astartes, Astra Militarum, Adepta Sororitas, Adeptus Mechanicus, Imperial Knights, Adeptus Custodes, Imperial Agents
+- The Forces of Chaos: Chaos Space Marines, Chaos Daemons, Chaos Knights
+- Xenos: Aeldari (Craftworlds), Drukhari (Dark Eldar), Harlequins, Orks, T’au Empire, Tyranids, Necrons, Genestealer Cults, Leagues of Votann
+
+Data structure supports:
 - Name, Faction, Battlefield Role, Points, Keywords
 - Stats (M, WS, BS, S, T, W, A, Ld, Sv)
 - Weapons (Name, Range, Type, S, AP, D)
@@ -38,7 +43,7 @@ To view the website locally:
 
 ## Adding More Data
 
-Edit the `allUnits` array in `public/index.html` to add more units or factions. Ensure the data structure matches the existing format.
+Edit the `allUnits` array in `public/index.html` to add more units or update data. Data is currently placeholder (points: "TBD", etc.) - replace with accurate values from Wahapedia or official sources.
 
 ## Future Expansions
 
