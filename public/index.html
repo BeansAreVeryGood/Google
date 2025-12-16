@@ -3,32 +3,406 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Search Tab</title>
+  <title>Warhammer 40k Data Cards</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; }
-    header { padding: 12px; background:#f5f5f5; display:flex; gap:8px; align-items:center; }
-    input[type="search"]{flex:1; padding:8px;}
-    iframe{flex:1; width:100%; border:0;}
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #121212; color: #ffffff; }
+    nav { background: #1e1e1e; padding: 10px; }
+    nav button { background: #333; color: white; border: none; padding: 10px; margin: 5px; cursor: pointer; }
+    nav button.active { background: #555; }
+    .page { display: none; padding: 20px; }
+    .page.active { display: block; }
+    .card { background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 16px; margin: 10px; width: 300px; display: inline-block; vertical-align: top; }
+    .card h2 { margin-top: 0; color: #ff6b6b; }
+    .stats { display: flex; justify-content: space-between; flex-wrap: wrap; }
+    .stat { text-align: center; margin: 5px; }
+    .stat div { font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+    th { background: #333; }
+    input, select { background: #333; color: white; border: 1px solid #555; padding: 5px; }
+    button { background: #555; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+    .filters { margin-bottom: 20px; }
+    .comparison { display: flex; flex-wrap: wrap; }
+    .army-list { background: #1e1e1e; padding: 10px; margin: 10px; }
+    @media (max-width: 600px) { .card { width: 100%; } .stats { flex-direction: column; } }
   </style>
 </head>
 <body>
-  <header>
-    <form id="searchForm" action="https://duckduckgo.com/" method="get" target="searchFrame">
-      <input type="search" name="q" id="q" placeholder="Search (duckduckgo)" required />
-      <button type="submit">Search</button>
-    </form>
-    <!-- optional: quick switch to try Google (likely blocked inside iframe) -->
-    <small id="note" style="margin-left:12px;color:#666">Uses DuckDuckGo in-frame. Google may block embedding.</small>
-  </header>
+  <nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('units')">Units</button>
+    <button onclick="showPage('search')">Search</button>
+    <button onclick="showPage('comparison')">Compare</button>
+    <button onclick="showPage('army')">Army Planning</button>
+    <button onclick="showPage('updates')">Updates</button>
+    <button onclick="showPage('about')">About</button>
+  </nav>
 
-  <iframe name="searchFrame" id="searchFrame" srcdoc="<p style='padding:16px;color:#666'>Enter a query and press Search — results will open inside this tab.</p>"></iframe>
+  <div id="home" class="page active">
+    <h1>Welcome to Warhammer 40k Data Cards</h1>
+    <p>Select a faction to view units.</p>
+    <select id="factionSelect">
+      <option value="">Select Faction</option>
+      <option value="Space Marines">Space Marines</option>
+      <option value="Orks">Orks</option>
+    </select>
+    <button onclick="loadFactionUnits()">View Units</button>
+  </div>
+
+  <div id="units" class="page">
+    <h1>Unit List</h1>
+    <div class="filters">
+      <label>Role: <select id="roleFilter"><option value="">All</option><option value="HQ">HQ</option><option value="Troops">Troops</option><option value="Elites">Elites</option><option value="Fast Attack">Fast Attack</option></select></label>
+      <label>Points Min: <input type="number" id="pointsMin"></label>
+      <label>Points Max: <input type="number" id="pointsMax"></label>
+      <label>Keyword: <input type="text" id="keywordFilter"></label>
+      <label>Sort: <select id="sortBy"><option value="name">Name</option><option value="points">Points</option></select></label>
+      <button onclick="filterUnits()">Filter</button>
+    </div>
+    <div id="unitCards"></div>
+  </div>
+
+  <div id="unitDetail" class="page">
+    <h1 id="unitName"></h1>
+    <p><strong>Faction:</strong> <span id="unitFaction"></span></p>
+    <p><strong>Role:</strong> <span id="unitRole"></span> | <strong>Points:</strong> <span id="unitPoints"></span></p>
+    <p><strong>Keywords:</strong> <span id="unitKeywords"></span></p>
+    <h2>Stats</h2>
+    <table id="unitStats"></table>
+    <h2>Weapons</h2>
+    <table id="unitWeapons"></table>
+    <h2>Abilities</h2>
+    <p id="unitAbilities"></p>
+    <h2>Lore</h2>
+    <p id="unitLore"></p>
+    <p><strong>Edition:</strong> 10th</p>
+  </div>
+
+  <div id="search" class="page">
+    <h1>Search Units</h1>
+    <input type="text" id="searchQuery" placeholder="Search by name, keyword, or weapon">
+    <button onclick="performSearch()">Search</button>
+    <div id="searchResults"></div>
+  </div>
+
+  <div id="comparison" class="page">
+    <h1>Unit Comparison</h1>
+    <p>Select units to compare:</p>
+    <div id="compareSelectors"></div>
+    <button onclick="compareUnits()">Compare</button>
+    <div id="comparisonResults" class="comparison"></div>
+  </div>
+
+  <div id="army" class="page">
+    <h1>Army Planning</h1>
+    <select id="armyFaction">
+      <option value="Space Marines">Space Marines</option>
+      <option value="Orks">Orks</option>
+    </select>
+    <div id="armyUnits"></div>
+    <div class="army-list">
+      <h2>Your Army</h2>
+      <ul id="armyList"></ul>
+      <p>Total Points: <span id="totalPoints">0</span></p>
+    </div>
+  </div>
+
+  <div id="updates" class="page">
+    <h1>Updates / Changelog</h1>
+    <ul>
+      <li>2025-12-16: Added initial units for Space Marines and Orks.</li>
+      <li>2025-12-15: Site launched with basic features.</li>
+    </ul>
+  </div>
+
+  <div id="about" class="page">
+    <h1>About</h1>
+    <p>This site provides fan-made data cards for Warhammer 40k units. All content is for informational purposes and is not official.</p>
+    <p>Credits to Games Workshop for the Warhammer 40k universe.</p>
+    <p>This is a non-commercial fan project.</p>
+  </div>
 
   <script>
-    // keep current query visible; optional enhancements
-    const form = document.getElementById('searchForm');
-    form.addEventListener('submit', () => {
-      // no-op: the form target loads the results into the iframe automatically
+    let currentFaction = '';
+    let allUnits = [
+      {
+        name: "Tactical Marine",
+        faction: "Space Marines",
+        role: "Troops",
+        points: 18,
+        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines",
+        stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" },
+        weapons: [
+          { name: "Boltgun", range: "24\"", type: "Rapid Fire 1", s: "4", ap: "-1", d: "1" },
+          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" }
+        ],
+        abilities: "And They Shall Know No Fear",
+        lore: "The backbone of any Space Marine army."
+      },
+      {
+        name: "Assault Marine",
+        faction: "Space Marines",
+        role: "Troops",
+        points: 25,
+        keywords: "Infantry, Grenades, Jump Pack, Imperium, Adeptus Astartes",
+        stats: { m: "12\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "2", ld: "8", sv: "3+" },
+        weapons: [
+          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" },
+          { name: "Chainsword", range: "Melee", type: "Melee", s: "User", ap: "-1", d: "1" }
+        ],
+        abilities: "And They Shall Know No Fear, Deep Strike",
+        lore: "Leaping into battle with jump packs."
+      },
+      {
+        name: "Devastator Marine",
+        faction: "Space Marines",
+        role: "Elites",
+        points: 30,
+        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines",
+        stats: { m: "6\"", ws: "3+", bs: "3+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "3+" },
+        weapons: [
+          { name: "Boltgun", range: "24\"", type: "Rapid Fire 1", s: "4", ap: "-1", d: "1" },
+          { name: "Heavy Bolter", range: "36\"", type: "Heavy 3", s: "5", ap: "-1", d: "1" }
+        ],
+        abilities: "And They Shall Know No Fear",
+        lore: "Specialists in heavy weaponry, providing devastating firepower."
+      },
+      {
+        name: "Captain",
+        faction: "Space Marines",
+        role: "HQ",
+        points: 80,
+        keywords: "Infantry, Grenades, Imperium, Adeptus Astartes, Ultramarines, Captain",
+        stats: { m: "6\"", ws: "2+", bs: "2+", s: "4", t: "4", w: "5", a: "4", ld: "9", sv: "3+" },
+        weapons: [
+          { name: "Bolt Pistol", range: "12\"", type: "Pistol 1", s: "4", ap: "0", d: "1" },
+          { name: "Master-crafted Power Sword", range: "Melee", type: "Melee", s: "+1", ap: "-3", d: "2" }
+        ],
+        abilities: "And They Shall Know No Fear, Rites of Battle",
+        lore: "Inspiring leaders who rally their brothers to victory."
+      },
+      {
+        name: "Ork Boy",
+        faction: "Orks",
+        role: "Troops",
+        points: 7,
+        keywords: "Infantry, Ork, Waaagh!",
+        stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" },
+        weapons: [
+          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
+          { name: "Choppa", range: "Melee", type: "Melee", s: "User", ap: "0", d: "1" }
+        ],
+        abilities: "Waaagh!",
+        lore: "Basic Ork infantry."
+      },
+      {
+        name: "Nob",
+        faction: "Orks",
+        role: "Elites",
+        points: 25,
+        keywords: "Infantry, Ork, Waaagh!",
+        stats: { m: "5\"", ws: "3+", bs: "4+", s: "5", t: "4", w: "2", a: "3", ld: "7", sv: "6+" },
+        weapons: [
+          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
+          { name: "Power Klaw", range: "Melee", type: "Melee", s: "x2", ap: "-3", d: "2" }
+        ],
+        abilities: "Waaagh!",
+        lore: "Tough Ork leaders."
+      },
+      {
+        name: "Trukk Boy",
+        faction: "Orks",
+        role: "Troops",
+        points: 8,
+        keywords: "Infantry, Ork, Waaagh!",
+        stats: { m: "5\"", ws: "4+", bs: "4+", s: "4", t: "4", w: "1", a: "1", ld: "7", sv: "6+" },
+        weapons: [
+          { name: "Shoota", range: "18\"", type: "Assault 2", s: "4", ap: "0", d: "1" },
+          { name: "Choppa", range: "Melee", type: "Melee", s: "User", ap: "0", d: "1" }
+        ],
+        abilities: "Waaagh!, 'Ere We Go!",
+        lore: "Orks transported in Trukks for rapid assaults."
+      },
+      {
+        name: "Warbuggy",
+        faction: "Orks",
+        role: "Fast Attack",
+        points: 35,
+        keywords: "Vehicle, Ork, Waaagh!",
+        stats: { m: "14\"", ws: "-", bs: "4+", s: "4", t: "4", w: "6", a: "3", ld: "7", sv: "6+" },
+        weapons: [
+          { name: "Twin Big Shoota", range: "36\"", type: "Assault 3", s: "5", ap: "0", d: "1" }
+        ],
+        abilities: "Waaagh!, Explodes",
+        lore: "Fast, ramshackle vehicles armed with big shootas."
+      }
+    ];
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function loadFactionUnits() {
+      currentFaction = document.getElementById('factionSelect').value;
+      if (currentFaction) {
+        showPage('units');
+        filterUnits();
+      }
+    }
+
+    function filterUnits() {
+      let filtered = allUnits.filter(u => u.faction === currentFaction);
+      const role = document.getElementById('roleFilter').value;
+      if (role) filtered = filtered.filter(u => u.role === role);
+      const min = document.getElementById('pointsMin').value;
+      if (min) filtered = filtered.filter(u => u.points >= min);
+      const max = document.getElementById('pointsMax').value;
+      if (max) filtered = filtered.filter(u => u.points <= max);
+      const keyword = document.getElementById('keywordFilter').value.toLowerCase();
+      if (keyword) filtered = filtered.filter(u => u.keywords.toLowerCase().includes(keyword));
+      const sort = document.getElementById('sortBy').value;
+      filtered.sort((a, b) => sort === 'name' ? a.name.localeCompare(b.name) : a.points - b.points);
+      displayUnits(filtered);
+    }
+
+    function displayUnits(units) {
+      const container = document.getElementById('unitCards');
+      container.innerHTML = '';
+      units.forEach(unit => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2>${unit.name}</h2>
+          <p><strong>Role:</strong> ${unit.role} | <strong>Points:</strong> ${unit.points}</p>
+          <p><strong>Keywords:</strong> ${unit.keywords}</p>
+          <button onclick="viewUnit('${unit.name}')">View Datasheet</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function viewUnit(name) {
+      const unit = allUnits.find(u => u.name === name);
+      document.getElementById('unitName').textContent = unit.name;
+      document.getElementById('unitFaction').textContent = unit.faction;
+      document.getElementById('unitRole').textContent = unit.role;
+      document.getElementById('unitPoints').textContent = unit.points;
+      document.getElementById('unitKeywords').textContent = unit.keywords;
+      const statsTable = document.getElementById('unitStats');
+      statsTable.innerHTML = '<tr><th>M</th><th>WS</th><th>BS</th><th>S</th><th>T</th><th>W</th><th>A</th><th>Ld</th><th>Sv</th></tr>';
+      const row = document.createElement('tr');
+      Object.values(unit.stats).forEach(s => {
+        const td = document.createElement('td');
+        td.textContent = s;
+        row.appendChild(td);
+      });
+      statsTable.appendChild(row);
+      const weaponsTable = document.getElementById('unitWeapons');
+      weaponsTable.innerHTML = '<tr><th>Name</th><th>Range</th><th>Type</th><th>S</th><th>AP</th><th>D</th></tr>';
+      unit.weapons.forEach(w => {
+        const row = document.createElement('tr');
+        Object.values(w).forEach(v => {
+          const td = document.createElement('td');
+          td.textContent = v;
+          row.appendChild(td);
+        });
+        weaponsTable.appendChild(row);
+      });
+      document.getElementById('unitAbilities').textContent = unit.abilities;
+      document.getElementById('unitLore').textContent = unit.lore;
+      showPage('unitDetail');
+    }
+
+    function performSearch() {
+      const query = document.getElementById('searchQuery').value.toLowerCase();
+      const results = allUnits.filter(u =>
+        u.name.toLowerCase().includes(query) ||
+        u.keywords.toLowerCase().includes(query) ||
+        u.weapons.some(w => w.name.toLowerCase().includes(query))
+      );
+      const container = document.getElementById('searchResults');
+      container.innerHTML = '';
+      results.forEach(unit => {
+        const div = document.createElement('div');
+        div.innerHTML = `<h3>${unit.name} (${unit.faction})</h3><button onclick="viewUnit('${unit.name}')">View</button>`;
+        container.appendChild(div);
+      });
+    }
+
+    function compareUnits() {
+      const selected = Array.from(document.querySelectorAll('#compareSelectors input:checked')).map(cb => cb.value);
+      const units = allUnits.filter(u => selected.includes(u.name));
+      const container = document.getElementById('comparisonResults');
+      container.innerHTML = '';
+      units.forEach(unit => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <h2>${unit.name}</h2>
+          <p>Points: ${unit.points}</p>
+          <table>
+            <tr><th>Stat</th><th>Value</th></tr>
+            <tr><td>M</td><td>${unit.stats.m}</td></tr>
+            <tr><td>WS</td><td>${unit.stats.ws}</td></tr>
+            <tr><td>BS</td><td>${unit.stats.bs}</td></tr>
+            <tr><td>S</td><td>${unit.stats.s}</td></tr>
+            <tr><td>T</td><td>${unit.stats.t}</td></tr>
+            <tr><td>W</td><td>${unit.stats.w}</td></tr>
+            <tr><td>A</td><td>${unit.stats.a}</td></tr>
+            <tr><td>Ld</td><td>${unit.stats.ld}</td></tr>
+            <tr><td>Sv</td><td>${unit.stats.sv}</td></tr>
+          </table>
+          <p><strong>Weapons:</strong> ${unit.weapons.map(w => w.name).join(', ')}</p>
+          <p><strong>Abilities:</strong> ${unit.abilities}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Populate compare selectors
+    const compareContainer = document.getElementById('compareSelectors');
+    allUnits.forEach(unit => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="checkbox" value="${unit.name}"> ${unit.name}`;
+      compareContainer.appendChild(label);
     });
+
+    // Army planning
+    function loadArmyUnits() {
+      const faction = document.getElementById('armyFaction').value;
+      const units = allUnits.filter(u => u.faction === faction);
+      const container = document.getElementById('armyUnits');
+      container.innerHTML = '';
+      units.forEach(unit => {
+        const div = document.createElement('div');
+        div.innerHTML = `<p>${unit.name} - ${unit.points} pts <button onclick="addToArmy('${unit.name}')">Add</button></p>`;
+        container.appendChild(div);
+      });
+    }
+    document.getElementById('armyFaction').addEventListener('change', loadArmyUnits);
+    loadArmyUnits();
+
+    let army = [];
+    function addToArmy(name) {
+      const unit = allUnits.find(u => u.name === name);
+      army.push(unit);
+      updateArmyList();
+    }
+    function updateArmyList() {
+      const list = document.getElementById('armyList');
+      list.innerHTML = '';
+      let total = 0;
+      army.forEach(u => {
+        const li = document.createElement('li');
+        li.textContent = `${u.name} - ${u.points} pts`;
+        list.appendChild(li);
+        total += u.points;
+      });
+      document.getElementById('totalPoints').textContent = total;
+    }
   </script>
 </body>
 </html>
